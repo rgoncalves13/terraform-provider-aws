@@ -1,3 +1,33 @@
+# Detailed Explanation of Workflow Steps
+# Trigger Events:
+
+# The workflow triggers on push and pull_request events to the main branch.
+# Job Definition:
+
+# The job snyk runs on ubuntu-latest.
+# Check Out Repository:
+
+# Uses the actions/checkout@v2 action to clone the hashicorp/terraform-provider-aws repository.
+# Specifies the path terraform-provider-aws to check out the repository into a subdirectory.
+# Set Up Go:
+
+# Uses the actions/setup-go@v3 action to set up the specified version of Go.
+# Install Node.js:
+
+# Uses the actions/setup-node@v3 action to install Node.js, which is required for installing Snyk CLI.
+# Install Snyk CLI:
+
+# Runs npm install -g snyk to globally install the Snyk CLI.
+# Authenticate Snyk:
+
+# Uses the Snyk token stored in GitHub Secrets to authenticate Snyk CLI.
+# Run Snyk Test:
+
+# The cd terraform-provider-aws commands change the directory to the cloned repository before running snyk test.
+# Monitor the Project:
+
+# Executes snyk monitor to set up continuous monitoring and get alerts for new vulnerabilities.
+
 name: Snyk Security Scan
 
 on:
@@ -44,3 +74,6 @@ jobs:
       run: |
         cd terraform-provider-aws
         snyk monitor
+
+
+
