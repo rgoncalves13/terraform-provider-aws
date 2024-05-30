@@ -1,0 +1,46 @@
+name: Snyk Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the source code from hashicorp/terraform-provider-aws
+      uses: actions/checkout@v2
+      with:
+        repository: hashicorp/terraform-provider-aws
+        path: terraform-provider-aws
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.18'  # Specify the Go version
+
+    - name: Install Node.js (for Snyk CLI)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install Snyk CLI
+      run: npm install -g snyk
+
+    - name: Authenticate Snyk
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: snyk auth $SNYK_TOKEN
+
+    - name: Run Snyk to check for vulnerabilities
+      run: |
+        cd terraform-provider-aws
+        snyk test
+
+    - name: Monitor project with Snyk
+      run: |
+        cd terraform-provider-aws
+        snyk monitor
